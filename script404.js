@@ -24,7 +24,7 @@ singlePost.addEventListener('click', () => { // Get a single post
 submit.addEventListener('click', () => { // submit
     if (!id) {
         numberId.value = '';
-    } else if (numberId.value === ''){
+    } else if (numberId.value === '') {
         return print();
     }
     fetch(url + numberId.value)
