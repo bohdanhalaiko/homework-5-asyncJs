@@ -4,12 +4,8 @@ const singlePost = document.getElementById('single-post');
 const numberId = document.getElementById('number-id');
 const output = document.querySelector('.output');
 
-let dataPosts;
+let url = `https://jsonplaceholder.typicode.com/posts/`;
 let id = false;
-
-fetch(`https://jsonplaceholder.typicode.com/posts/`)
-    .then(response => response.json())
-    .then(data => dataPosts = data);
 
 allPosts.addEventListener('click', () => { // Get all posts
     if (allPosts.checked) {
@@ -26,18 +22,25 @@ singlePost.addEventListener('click', () => { // Get a single post
 });
 
 submit.addEventListener('click', () => { // submit
-    let data = [...dataPosts];
-    if (id) {
-        data = data.filter(el => el.id === +numberId.value);
-        if (!data.length) {
-            output.innerHTML = '<h3>Nothing found, or an invalid ID</h3>';
-            return numberId.value = '';
-        }
+    if (!id) {
+        numberId.value = '';
+    } else if (numberId.value === ''){
+        return print();
     }
-    print(data)
-}); 
+    fetch(url + numberId.value)
+        .then(response => {
+            if (response.status !== 200) return; // return undefined => data
+            return response.json();
+        })
+        .then(data => print(data));
+});
 
 function print(data) {
+    if (!data) { // if data === undefined
+        output.innerHTML = '<h3>Nothing found, or an invalid ID</h3>';
+        return numberId.value = '';
+    }
+    if (!Array.isArray(data)) data = [data]; // if (data !== 'Array') data => [data]
     let result = ''
     data.forEach(el => {
         result +=
